@@ -14,7 +14,8 @@ class Check_attendance(QMainWindow,form_class):
         super().__init__()
         self.setupUi(self)
         self.stackedWidget.setCurrentIndex(0)
-        self.a = False
+        self.log_check = False
+        self.manage_mode = False
         self.btn_home1.clicked.connect(self.move_main)   # 메인 페이지로 이동
         self.btn_home2.clicked.connect(self.move_main)
         self.btn_home3.clicked.connect(self.move_main)
@@ -34,6 +35,7 @@ class Check_attendance(QMainWindow,form_class):
         self.btn_tlogout.clicked.connect(self.logout)       # 관리자 출결 페이지 로그아웃 버튼 눌러서 로그아웃 됨
         self.btn_tcal.clicked.connect(self.move_tcalendar)
         self.btn_tmessage.clicked.connect(self.move_tmessage)
+        self.btn_send.clicked.connect(self.send_message)    # 메시지 전송 버튼 누르면 send_message 메서드 실행
 
     def move_main(self):
         self.stackedWidget.setCurrentIndex(0)
@@ -41,7 +43,7 @@ class Check_attendance(QMainWindow,form_class):
     def move_login(self):
         self.stackedWidget.setCurrentIndex(1)
         self.clear_check()
-        if self.a == True:
+        if self.log_check == True:
             self.logout()
 
     def clear_check(self):
@@ -49,33 +51,38 @@ class Check_attendance(QMainWindow,form_class):
         self.pw.clear()
 
     def move_check(self):
-        if self.a == False:
+        if self.log_check == False:
             QMessageBox.information(self, '알림', '로그인을 해주세요')
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
-        elif self.a == True:
+        elif self.log_check == True:
             self.stackedWidget.setCurrentIndex(2)
 
     def move_tcheck(self):
+        self.manage()
         self.stackedWidget.setCurrentIndex(3)
+        # if self.manage_mode == False:
+        #     QMessageBox.critical(self, '알림', '관리자가 아닙니다')
+        # elif self.manage_mode == True:
+        #     self.stackedWidget.setCurrentIndex(3)
 
     def move_calendar(self):
-        if self.a == False:
+        if self.log_check == False:
             QMessageBox.information(self, '알림', '로그인을 해주세요')
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
-        elif self.a == True:
+        elif self.log_check == True:
             self.stackedWidget.setCurrentIndex(4)
 
     def move_tcalendar(self):
         self.stackedWidget.setCurrentIndex(5)
 
     def move_message(self):
-        if self.a == False:
+        if self.log_check == False:
             QMessageBox.information(self, '알림', '로그인을 해주세요')
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
-        elif self.a == True:
+        elif self.log_check == True:
             self.stackedWidget.setCurrentIndex(6)
 
     def move_tmessage(self):
@@ -103,10 +110,16 @@ class Check_attendance(QMainWindow,form_class):
 
         elif self.log[0][1] == id:
             QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
-            self.a = True
+            self.log_check = True
             self.log2_btn()
             self.move_main()
 
+        # elif self.log[0][1] == id and self.log[0][4] == '교수':
+        #     QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
+        #     self.log_check = True
+        #     self.manage_mode = True
+        #     self.log2_btn()
+        #     self.move_main()
 
     def logout(self):
         # conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
@@ -117,7 +130,7 @@ class Check_attendance(QMainWindow,form_class):
         # conn.commit()
         # conn.close()
         QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그아웃 되었습니다')
-        self.a = False
+        self.log_check = False
         self.log_btn()
         self.move_main()
 
@@ -141,16 +154,17 @@ class Check_attendance(QMainWindow,form_class):
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM schedule WHERE 날짜='{int(self.date_add)}'")
-        b = cursor.fetchall()
-        print(b)
-        for i in range(len(b)):
-            self.schedulespace.addItem((b[i][0]))
-            self.schedulespace.addItem((b[i][1]))
+        s = cursor.fetchall()
+        print(s)
+        for i in range(len(s)):
+            add = s[i][0] + ' ' + s[i][1]
+            self.schedulespace.addItem(add)
+            # self.schedulespace.addItem((b[i][0]))
+            # self.schedulespace.addItem((b[i][1]))
 
     def schedule_add(self):    # 일정 추가
         scheduleadd = self.scheduleadd.text()
         print(scheduleadd)
-        # self.schedulespace.append(scheduleadd)
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
@@ -160,6 +174,37 @@ class Check_attendance(QMainWindow,form_class):
         self.schedule()
         # conn.close()
         self.scheduleadd.clear()
+
+    def send_message(self):
+        self.messagespace.clear()
+        message = self.message.text()
+        print(message)
+        if message == '':
+            QMessageBox.information(self, '알림', '메시지를 입력해주세요')
+            return
+        conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+                               charset='utf8')
+        cursor = conn.cursor()
+        cursor.execute(
+            f"INSERT INTO message (이름, 메시지) VALUES('{self.log[0][3]}','{message}')")
+        conn.commit()
+        self.message.clear()
+        cursor.execute(f"SELECT * FROM message WHERE 메시지='{message}'")
+        m = cursor.fetchall()
+        conn.close()
+        print(m)
+        for i in range(len(m)):
+            self.messagespace.addItem(m[i][1])
+
+    def manage(self):   # 관리자 모드
+        if self.log[0][4] == '교수':
+            self.manage_mode = True
+        else:
+            QMessageBox.critical(self, '알림', '관리자가 아닙니다')
+
+
+
+
 
 
 if __name__ == "__main__":

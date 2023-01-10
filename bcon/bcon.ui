@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="page_2">
     <widget class="QPushButton" name="btn_login">
@@ -507,7 +507,7 @@
     </widget>
    </widget>
    <widget class="QWidget" name="page_5">
-    <widget class="QLineEdit" name="smessage">
+    <widget class="QLineEdit" name="message">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -556,7 +556,7 @@
       <string>home</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="message">
+    <widget class="QListWidget" name="messagespace">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -594,7 +594,7 @@
       <string>home</string>
      </property>
     </widget>
-    <widget class="QListWidget" name="tmessage">
+    <widget class="QListWidget" name="messagespace2">
      <property name="geometry">
       <rect>
        <x>30</x>
