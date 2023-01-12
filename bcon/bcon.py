@@ -15,15 +15,16 @@ class Check_attendance(QMainWindow,form_class):
         super().__init__()
         self.setupUi(self)
         self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget2.setCurrentIndex(0)
         self.log_check = False
         self.manage_mode = False
         self.btn_home1.clicked.connect(self.move_main)   # 메인 페이지로 이동
         self.btn_home2.clicked.connect(self.move_main)
-        self.btn_home3.clicked.connect(self.move_main)
+        # self.btn_home3.clicked.connect(self.move_main)
         self.btn_home4.clicked.connect(self.move_main)
-        self.btn_home5.clicked.connect(self.move_main)
+        # self.btn_home5.clicked.connect(self.move_main)
         self.btn_home6.clicked.connect(self.move_main)
-        self.btn_home7.clicked.connect(self.move_main)
+        # self.btn_home7.clicked.connect(self.move_main)
         self.btn_login.clicked.connect(self.move_login)    # 메인 페이지 로그인 버튼 누르면 로그인 페이지로
         self.btn_check.clicked.connect(self.move_check)    # 메인 페이지 출결 버튼 누르면 출결 페이지로
         self.btn_cal.clicked.connect(self.move_calendar)   # 메인 페이지 일정 버튼 누르면 일정 페이지로
@@ -41,8 +42,8 @@ class Check_attendance(QMainWindow,form_class):
         self.btn_out.clicked.connect(self.checkouttime)     # 퇴실 버튼 누르면 checkouttime 메서드 실행
         self.btn_go.clicked.connect(self.checkgotime)       # 외출 버튼 누르면 checkgotime 메서드 실행
         self.btn_back.clicked.connect(self.checkbacktime)   # 복귀 버튼 누르면 checkbacktime 메서드 실행
-        self.okbutton.clicked.connect(self.check_condition)
-
+        self.okbutton.clicked.connect(self.check_condition)  # 확인 버튼 누르면 check_condition 메서드 실행(출결 조건 확인 후 카운트)
+        self.btn_manage.clicked.connect(self.manage)
     def move_main(self):
         self.stackedWidget.setCurrentIndex(0)
 
@@ -137,12 +138,12 @@ class Check_attendance(QMainWindow,form_class):
             self.log2_btn()
             self.move_main()
 
-        # elif self.log[0][1] == id and self.log[0][4] == '교수':
-        #     QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
-        #     self.log_check = True
-        #     self.manage_mode = True
-        #     self.log2_btn()
-        #     self.move_main()
+        elif self.log[0][1] == id and self.log[0][4] == '교수':
+            QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
+            self.log_check = True
+            self.manage_mode = True
+            self.log2_btn()
+            # self.move_main()
 
     def logout(self):
         # conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
@@ -228,6 +229,7 @@ class Check_attendance(QMainWindow,form_class):
 
         elif self.log[0][4] == '교수':
             self.manage_mode = True
+            self.stackedWidget2.setCurrentIndex(0)
 
     def check_condition(self):  # 출결 조건 설정
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',

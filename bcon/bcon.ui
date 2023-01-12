@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>7</number>
    </property>
    <widget class="QWidget" name="page_2">
     <widget class="QPushButton" name="btn_login">
@@ -78,20 +78,20 @@
       <string>일정</string>
      </property>
     </widget>
-    <widget class="QStackedWidget" name="stackedWidget_2">
+    <widget class="QStackedWidget" name="stackedWidget2">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>150</y>
-       <width>441</width>
-       <height>221</height>
+       <y>340</y>
+       <width>440</width>
+       <height>191</height>
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_9">
-      <widget class="QPushButton" name="btn_message_2">
+      <widget class="QPushButton" name="btn_tmessage">
        <property name="geometry">
         <rect>
          <x>290</x>
@@ -104,7 +104,7 @@
         <string>메시지</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_cal_2">
+      <widget class="QPushButton" name="btn_tcal">
        <property name="geometry">
         <rect>
          <x>160</x>
@@ -130,7 +130,7 @@
         <string>로그인</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_check_2">
+      <widget class="QPushButton" name="btn_tcheck">
        <property name="geometry">
         <rect>
          <x>290</x>
@@ -145,7 +145,7 @@
       </widget>
      </widget>
      <widget class="QWidget" name="page_10">
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="btn_manage">
        <property name="geometry">
         <rect>
          <x>190</x>
@@ -155,7 +155,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>관리자 모드</string>
        </property>
       </widget>
      </widget>
@@ -352,23 +352,10 @@
       <string>조퇴</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_tcheck">
-     <property name="geometry">
-      <rect>
-       <x>12</x>
-       <y>20</y>
-       <width>75</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>관리자</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_home2">
      <property name="geometry">
       <rect>
-       <x>260</x>
+       <x>261</x>
        <y>30</y>
        <width>75</width>
        <height>30</height>
@@ -537,8 +524,8 @@
     <widget class="QPushButton" name="okbutton">
      <property name="geometry">
       <rect>
-       <x>184</x>
-       <y>493</y>
+       <x>170</x>
+       <y>30</y>
        <width>75</width>
        <height>30</height>
       </rect>
@@ -621,19 +608,6 @@
      </property>
      <property name="text">
       <string>일정 추가</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_tcal">
-     <property name="geometry">
-      <rect>
-       <x>12</x>
-       <y>20</y>
-       <width>75</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>관리자</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_home4">
@@ -750,19 +724,6 @@
      </property>
      <property name="text">
       <string>전송</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_tmessage">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>75</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>관리자</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_home6">
