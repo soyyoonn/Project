@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import *
-from datetime import datetime
+from datetime import datetime,timedelta
 from PyQt5.QtCore import QTime,QDate
 from PyQt5.QtWidgets import QApplication, QWidget, QMessageBox
 
@@ -41,6 +41,7 @@ class Check_attendance(QMainWindow,form_class):
         self.btn_out.clicked.connect(self.checkouttime)     # 퇴실 버튼 누르면 checkouttime 메서드 실행
         self.btn_go.clicked.connect(self.checkgotime)       # 외출 버튼 누르면 checkgotime 메서드 실행
         self.btn_back.clicked.connect(self.checkbacktime)   # 복귀 버튼 누르면 checkbacktime 메서드 실행
+        self.okbutton.clicked.connect(self.check_condition)
 
     def move_main(self):
         self.stackedWidget.setCurrentIndex(0)
@@ -61,7 +62,19 @@ class Check_attendance(QMainWindow,form_class):
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
         elif self.log_check == True:
+            conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+                                   charset='utf8')
+            cursor = conn.cursor()
+            cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+            self.attendance_count = cursor.fetchall()
+            conn.close()
+            self.attendancecount.setText(str(self.attendance_count[0][9]))
+            self.latecount.setText(str(self.attendance_count[0][10]))
+            self.leavecount.setText(str(self.attendance_count[0][11]))
+            self.goingoutcount.setText(str(self.attendance_count[0][12]))
+            self.absentcount.setText(str(self.attendance_count[0][13]))
             self.stackedWidget.setCurrentIndex(2)
+
 
     def move_tcheck(self):
         self.manage()
@@ -216,7 +229,33 @@ class Check_attendance(QMainWindow,form_class):
         elif self.log[0][4] == '교수':
             self.manage_mode = True
 
-    def checkintime(self):
+    def check_condition(self):  # 출결 조건 설정
+        conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+                               charset='utf8')
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+        self.attendance_count = cursor.fetchall()
+        conn.close()
+        if  self.attendance_count[0][8]== None:
+            self.absent_plus()
+        elif int(self.intime) < 92100 and int(self.outtime) >= 170100 and self.attendance_count[0][7] == None:
+            self.attendance_plus()
+        elif int(self.intime) >= 92100 and int(self.outtime) >= 170100:
+            self.late_plus()
+        elif int(self.intime) < 92100 and 130100 <= int(self.outtime) < 170000:
+            self.leave_plus()
+        elif int(self.intime) > 130100 and int(self.outtime) >= 170100:
+            self.absent_plus()
+        elif 92100 < int(self.gotime) < 130100 and 130100 <= int(self.backtime) <= 170000:
+            self.goingout_plus()
+        elif 92100 < int(self.gotime) < 130100 and 92100 < int(self.backtime) < 130100:
+            self.goingout_plus()
+        elif 130100 < int(self.gotime) < 170000 and 130100 <= int(self.backtime) <= 170000:
+            self.goingout_plus()
+
+
+
+    def checkintime(self):    # 입실 찍을 때
         checkin = self.checkin.text()
         now = datetime.now()
         intime = now.strftime('%Y-%m-%d %H:%M:%S')
@@ -224,15 +263,20 @@ class Check_attendance(QMainWindow,form_class):
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
-            f"UPDATE check_data SET 입실='{intime}' WHERE 이름='{self.log[0][3]}'")
+            f"UPDATE check_data SET 입실='{intime}', 퇴실=NULL WHERE 이름='{self.log[0][3]}'")
         conn.commit()
         conn.close()
         QMessageBox.information(self, '알림', f'{intime}\n {self.log[0][3]}님 입실')
         self.checkin.setText(intime)
-        # date = intime[:10]
-        # time = intime[11:19]
+        # ----------------------------------------------------------------
+        time = QTime.currentTime()
+        time = time.toString('hhmmss')
+        self.intime = time
+        # date = QDate.currentDate()
+        # date = date.toString('yyMMdd')
 
-    def checkouttime(self):
+
+    def checkouttime(self):   # 퇴실 찍을 때
         checkout = self.checkout.text()
         now = datetime.now()
         outtime = now.strftime('%Y-%m-%d %H:%M:%S')
@@ -247,23 +291,10 @@ class Check_attendance(QMainWindow,form_class):
         self.checkout.setText(outtime)
         time = QTime.currentTime()
         time = time.toString('hhmmss')
-        date = QDate.currentDate()
-        date = date.toString('yyMMdd')
-        print(time)
-        print(date)
-        conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
-                               charset='utf8')
-        cursor = conn.cursor()
-        if int(time) < 92100:
-            cursor.execute(
-                f"INSERT INTO check_attendance (날짜, 이름, 출석) VALUES ('{date}','{self.log[0][3]}','0')")
-        elif int(time) >= 92100:
-            cursor.execute(
-                f"INSERT INTO check_attendance (날짜, 이름, 지각) VALUES ('{date}','{self.log[0][3]}','0')")
-        conn.commit()
-        conn.close()
+        self.outtime = time
 
-    def checkgotime(self):
+
+    def checkgotime(self):     # 외출 찍을 때
         checkgo = self.checkgo.text()
         now = datetime.now()
         gotime = now.strftime('%Y-%m-%d %H:%M:%S')
@@ -276,8 +307,13 @@ class Check_attendance(QMainWindow,form_class):
         conn.close()
         QMessageBox.information(self, '알림', f'{gotime}\n {self.log[0][3]}님 외출')
         self.checkgo.setText(gotime)
+        time = QTime.currentTime()
+        time = time.toString('hhmmss')
+        self.gotime = time
+        # self.check_condition()
 
-    def checkbacktime(self):
+
+    def checkbacktime(self):      # 복귀 찍을 때
         checkback = self.checkback.text()
         now = datetime.now()
         backtime = now.strftime('%Y-%m-%d %H:%M:%S')
@@ -290,86 +326,83 @@ class Check_attendance(QMainWindow,form_class):
         conn.close()
         QMessageBox.information(self, '알림', f'{backtime}\n {self.log[0][3]}님 복귀')
         self.checkback.setText(backtime)
+        time = QTime.currentTime()
+        time = time.toString('hhmmss')
+        self.backtime = time
+
 
     def attendance_plus(self):  # 출석 카운트 +1
+        attendacecount = self.attendancecount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             f"UPDATE check_data SET 출석횟수='{int(self.log[0][9])+1}' WHERE 이름='{self.log[0][3]}'")
+        cursor.execute(f"SELECT * FROM check_data WHERE 출석횟수='{int(self.log[0][9])+1}' and 이름='{self.log[0][3]}'")
+        self.attendance_count = cursor.fetchall()
+        # print(self.log[0][9])
+        # print(self.attendance_count)
+        # print(self.attendance_count[0][9])
         conn.commit()
         conn.close()
+        self.attendancecount.setText(str(self.attendance_count[0][9]))
+
 
     def late_plus(self):  # 지각 카운트 +1
+        latecount = self.latecount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             f"UPDATE check_data SET 지각횟수='{int(self.log[0][10]) + 1}' WHERE 이름='{self.log[0][3]}'")
+        cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+        self.late_count = cursor.fetchall()
+        # print(self.late_count[0][10])
         conn.commit()
         conn.close()
+        self.latecount.setText(str(self.late_count[0][10]))
+
 
     def leave_plus(self):  # 조퇴 카운트 +1
+        leavecount = self.leavecount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             f"UPDATE check_data SET 조퇴횟수='{int(self.log[0][11]) + 1}' WHERE 이름='{self.log[0][3]}'")
+        cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+        self.leave_count = cursor.fetchall()
         conn.commit()
         conn.close()
+        self.leavecount.setText(str(self.leave_count[0][11]))
+
 
     def goingout_plus(self):  # 외출 카운트 +1
+        goingoutcount = self.goingoutcount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             f"UPDATE check_data SET 외출횟수='{int(self.log[0][12]) + 1}' WHERE 이름='{self.log[0][3]}'")
+        cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+        self.goingout_count = cursor.fetchall()
         conn.commit()
         conn.close()
+        self.goingoutcount.setText(str(self.goingout_count[0][12]))
+
 
     def absent_plus(self):  # 결석 카운트 +1
+        absentcount = self.absentcount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
             f"UPDATE check_data SET 결석횟수='{int(self.log[0][13]) + 1}' WHERE 이름='{self.log[0][3]}'")
+        cursor.execute(f"SELECT * FROM check_data WHERE 이름='{self.log[0][3]}'")
+        self.absent_count = cursor.fetchall()
         conn.commit()
         conn.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        self.absentcount.setText(str(self.absent_count[0][13]))
 
 
 
