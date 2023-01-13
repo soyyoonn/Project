@@ -15,35 +15,36 @@ class Check_attendance(QMainWindow,form_class):
         super().__init__()
         self.setupUi(self)
         self.stackedWidget.setCurrentIndex(0)
-        self.stackedWidget2.setCurrentIndex(0)
         self.log_check = False
-        self.manage_mode = False
+        # self.manage_mode = False
         self.btn_home1.clicked.connect(self.move_main)   # 메인 페이지로 이동
         self.btn_home2.clicked.connect(self.move_main)
-        # self.btn_home3.clicked.connect(self.move_main)
+        self.btn_home3.clicked.connect(self.move_main)
         self.btn_home4.clicked.connect(self.move_main)
-        # self.btn_home5.clicked.connect(self.move_main)
+        self.btn_home5.clicked.connect(self.move_main)
         self.btn_home6.clicked.connect(self.move_main)
-        # self.btn_home7.clicked.connect(self.move_main)
         self.btn_login.clicked.connect(self.move_login)    # 메인 페이지 로그인 버튼 누르면 로그인 페이지로
         self.btn_check.clicked.connect(self.move_check)    # 메인 페이지 출결 버튼 누르면 출결 페이지로
         self.btn_cal.clicked.connect(self.move_calendar)   # 메인 페이지 일정 버튼 누르면 일정 페이지로
         self.calendarWidget.clicked.connect(self.schedule)   # 캘린더 위젯 누르면 schedule 메서드 실행
         self.btn_add.clicked.connect(self.schedule_add)      # 일정 추가 버튼 누르면 schedule_add 메서드 실행
         self.btn_message.clicked.connect(self.move_message)   # 메인 페이지 메시지 버튼 누르면 메시지 페이지로
-        self.btn_login2.clicked.connect(self.login)         # 로그인 페이지 로그인 버튼 누르면 login 메서드 실행
-        self.btn_tcheck.clicked.connect(self.move_tcheck)   # 관리자 출결 페이지로 이동
+        self.btn_login2.clicked.connect(self.login)          # 로그인 페이지 로그인 버튼 누르면 login 메서드 실행
+        self.pw.returnPressed.connect(self.login)
+        self.message.returnPressed.connect(self.send_message)
+        # self.btn_check.clicked.connect(self.move_tcheck)     # 관리자 출결 페이지로 이동
         self.btn_logout.clicked.connect(self.logout)        # 학생 출결 페이지 로그아웃 버튼 눌러서 로그아웃 됨
         self.btn_tlogout.clicked.connect(self.logout)       # 관리자 출결 페이지 로그아웃 버튼 눌러서 로그아웃 됨
-        self.btn_tcal.clicked.connect(self.move_tcalendar)   # 관리자 일정 페이지로 이동
-        self.btn_tmessage.clicked.connect(self.move_tmessage)   # 관리자 메시지 페이지로 이동
+        # self.btn_message.clicked.connect(self.move_tmessage)   # 관리자 메시지 페이지로 이동
         self.btn_send.clicked.connect(self.send_message)    # 메시지 전송 버튼 누르면 send_message 메서드 실행
         self.btn_in.clicked.connect(self.checkintime)       # 입실 버튼 누르면 checkintime 메서드 실행
         self.btn_out.clicked.connect(self.checkouttime)     # 퇴실 버튼 누르면 checkouttime 메서드 실행
         self.btn_go.clicked.connect(self.checkgotime)       # 외출 버튼 누르면 checkgotime 메서드 실행
         self.btn_back.clicked.connect(self.checkbacktime)   # 복귀 버튼 누르면 checkbacktime 메서드 실행
         self.okbutton.clicked.connect(self.check_condition)  # 확인 버튼 누르면 check_condition 메서드 실행(출결 조건 확인 후 카운트)
-        self.btn_manage.clicked.connect(self.manage)
+        self.okbutton2.clicked.connect(self.student_check)
+        self.studentlist.currentTextChanged.connect(self.messagelist)
+
     def move_main(self):
         self.stackedWidget.setCurrentIndex(0)
 
@@ -62,6 +63,10 @@ class Check_attendance(QMainWindow,form_class):
             QMessageBox.information(self, '알림', '로그인을 해주세요')
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
+
+        elif self.log[0][4] == '교수':
+            self.stackedWidget.setCurrentIndex(3)
+
         elif self.log_check == True:
             conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                    charset='utf8')
@@ -76,16 +81,6 @@ class Check_attendance(QMainWindow,form_class):
             self.absentcount.setText(str(self.attendance_count[0][13]))
             self.stackedWidget.setCurrentIndex(2)
 
-
-    def move_tcheck(self):
-        self.manage()
-        if self.manage_mode == True:
-            self.stackedWidget.setCurrentIndex(3)
-        # if self.manage_mode == False:
-        #     QMessageBox.critical(self, '알림', '관리자가 아닙니다')
-        # elif self.manage_mode == True:
-        #     self.stackedWidget.setCurrentIndex(3)
-
     def move_calendar(self):
         if self.log_check == False:
             QMessageBox.information(self, '알림', '로그인을 해주세요')
@@ -94,23 +89,23 @@ class Check_attendance(QMainWindow,form_class):
         elif self.log_check == True:
             self.stackedWidget.setCurrentIndex(4)
 
-    def move_tcalendar(self):
-        self.manage()
-        if self.manage_mode == True:
-            self.stackedWidget.setCurrentIndex(5)
-
     def move_message(self):
         if self.log_check == False:
             QMessageBox.information(self, '알림', '로그인을 해주세요')
             self.stackedWidget.setCurrentIndex(1)
             self.clear_check()
-        elif self.log_check == True:
+        elif self.log[0][4] == '교수':
             self.stackedWidget.setCurrentIndex(6)
+        elif self.log_check == True:
+            self.stackedWidget.setCurrentIndex(5)
 
-    def move_tmessage(self):
-        self.manage()
-        if self.manage_mode == True:
-            self.stackedWidget.setCurrentIndex(7)
+    # def manage(self):      # 관리자 모드 설정
+    #     # if self.log[0][4] != '교수':
+    #     #     self.manage_mode = False
+    #     #     QMessageBox.critical(self, '알림', '관리자가 아닙니다')
+    #     #     return
+    #     if self.log[0][4] == '교수':
+    #         self.manage_mode = True
 
     def login(self):
         id = self.id.text()
@@ -141,9 +136,9 @@ class Check_attendance(QMainWindow,form_class):
         elif self.log[0][1] == id and self.log[0][4] == '교수':
             QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
             self.log_check = True
-            self.manage_mode = True
+            # self.manage_mode = True
             self.log2_btn()
-            # self.move_main()
+            self.move_main()
 
     def logout(self):
         # conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
@@ -200,8 +195,10 @@ class Check_attendance(QMainWindow,form_class):
         self.scheduleadd.clear()
         QMessageBox.information(self, '알림', '일정이 추가됐습니다')
 
-    def send_message(self):
+    def send_message(self):  # 학생이 관리자에게 메시지 전송
         self.messagespace.clear()
+        teacherlist = self.teacherlist.currentText()
+        print(teacherlist)
         message = self.message.text()
         print(message)
         if message == '':
@@ -211,25 +208,51 @@ class Check_attendance(QMainWindow,form_class):
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(
-            f"INSERT INTO message (이름, 메시지) VALUES('{self.log[0][3]}','{message}')")
-        cursor.execute(f"SELECT * FROM message WHERE 이름='{self.log[0][3]}'")
-        m = cursor.fetchall()
+            f"INSERT INTO message (보낸사람, 메시지, 받는사람) VALUES('{self.log[0][3]}','{message}','{teacherlist}')")
         conn.commit()
+        cursor.execute(f"SELECT * FROM message WHERE 보낸사람='{self.log[0][3]}'")
+        m = cursor.fetchall()
         conn.close()
         self.message.clear()
         print(m)
         for i in range(len(m)):
-            self.messagespace.addItem(m[i][1])
+            self.messagespace.addItem(m[i][0] + ' : '+ m[i][1])
 
-    def manage(self):      # 관리자 모드 설정
-        if self.log[0][4] != '교수':
-            self.manage_mode = False
-            QMessageBox.critical(self, '알림', '관리자가 아닙니다')
-            return
+    def messagelist(self):    # 학생이 보낸 메시지 확인
+        self.messagespace2.clear()
+        studentlist = self.studentlist.currentText()
+        conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+                               charset='utf8')
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM message WHERE 받는사람='{self.log[0][3]}' and 보낸사람='{studentlist}'")
+        checkmessage = cursor.fetchall()
+        conn.close()
+        for i in range(len(checkmessage)):
+            self.messagespace2.addItem(checkmessage[i][0] + ' : ' + checkmessage[i][1])
 
-        elif self.log[0][4] == '교수':
-            self.manage_mode = True
-            self.stackedWidget2.setCurrentIndex(0)
+    def student_check(self):
+        conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+                               charset='utf8')
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM check_data WHERE 번호 < 28")
+        self.attendance_check = cursor.fetchall()
+        print(self.attendance_check)
+        conn.close()
+
+        Row = 0
+        self.tableWidget.setRowCount(len(self.attendance_check))
+        for i in self.attendance_check:
+            self.tableWidget.setItem(Row, 0, QTableWidgetItem(i[3]))  # 이름
+            self.tableWidget.setItem(Row, 1, QTableWidgetItem(i[5]))  # 입실시간
+            self.tableWidget.setItem(Row, 2, QTableWidgetItem(i[7]))  # 외출시간
+            self.tableWidget.setItem(Row, 3, QTableWidgetItem(i[6]))  # 복귀시간
+            self.tableWidget.setItem(Row, 4, QTableWidgetItem(i[8]))  # 퇴실시간
+            self.tableWidget.setItem(Row, 5, QTableWidgetItem(str(i[9])))  # 출석횟수
+            self.tableWidget.setItem(Row, 6, QTableWidgetItem(str(i[10])))  # 지각횟수
+            self.tableWidget.setItem(Row, 7, QTableWidgetItem(str(i[11])))  # 조퇴횟수
+            self.tableWidget.setItem(Row, 8, QTableWidgetItem(str(i[12])))  # 외출횟수
+            self.tableWidget.setItem(Row, 9, QTableWidgetItem(str(i[13])))  # 결석횟수
+            Row += 1
 
     def check_condition(self):  # 출결 조건 설정
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
@@ -254,7 +277,6 @@ class Check_attendance(QMainWindow,form_class):
             self.goingout_plus()
         elif 130100 < int(self.gotime) < 170000 and 130100 <= int(self.backtime) <= 170000:
             self.goingout_plus()
-
 
 
     def checkintime(self):    # 입실 찍을 때
@@ -312,7 +334,6 @@ class Check_attendance(QMainWindow,form_class):
         time = QTime.currentTime()
         time = time.toString('hhmmss')
         self.gotime = time
-        # self.check_condition()
 
 
     def checkbacktime(self):      # 복귀 찍을 때

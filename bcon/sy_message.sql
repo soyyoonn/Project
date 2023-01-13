@@ -23,8 +23,10 @@ DROP TABLE IF EXISTS `message`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `message` (
-  `이름` text,
-  `메시지` text
+  `보낸사람` text,
+  `메시지` text,
+  `받는사람` text,
+  `알림` int DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -34,7 +36,7 @@ CREATE TABLE `message` (
 
 LOCK TABLES `message` WRITE;
 /*!40000 ALTER TABLE `message` DISABLE KEYS */;
-INSERT INTO `message` VALUES ('이소윤','11'),('이소윤','ㄱㄱㄱㄱㄱ'),('이소윤','1234'),('이소윤','rㄱ ㄱ ㄱ ㄱㄱ ㄱ'),('이소윤',''),('이소윤',''),('이소윤','12345'),('이소윤','234556'),('이소윤','999'),('이소윤','99999999'),('이소윤','ㅋㅋㅋ'),('이소윤','ㅋㅋㅋㅋㅋㅋ');
+INSERT INTO `message` VALUES ('이소윤','1','이상복',1),('이소윤','1','이상복',1);
 /*!40000 ALTER TABLE `message` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -47,4 +49,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-01-11  1:46:02
+-- Dump completed on 2023-01-13 20:10:29

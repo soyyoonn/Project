@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="page_2">
     <widget class="QPushButton" name="btn_login">
@@ -77,88 +77,6 @@
      <property name="text">
       <string>일정</string>
      </property>
-    </widget>
-    <widget class="QStackedWidget" name="stackedWidget2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>340</y>
-       <width>440</width>
-       <height>191</height>
-      </rect>
-     </property>
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="page_9">
-      <widget class="QPushButton" name="btn_tmessage">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>150</y>
-         <width>75</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>메시지</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_tcal">
-       <property name="geometry">
-        <rect>
-         <x>160</x>
-         <y>150</y>
-         <width>75</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>일정</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_login_2">
-       <property name="geometry">
-        <rect>
-         <x>160</x>
-         <y>30</y>
-         <width>75</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>로그인</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_tcheck">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>30</y>
-         <width>75</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>출결</string>
-       </property>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="page_10">
-      <widget class="QPushButton" name="btn_manage">
-       <property name="geometry">
-        <rect>
-         <x>190</x>
-         <y>70</y>
-         <width>75</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>관리자 모드</string>
-       </property>
-      </widget>
-     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="page">
@@ -571,6 +489,56 @@
        <height>461</height>
       </rect>
      </property>
+     <column>
+      <property name="text">
+       <string>이름</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>입실시간</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>외출시간</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>복귀시간</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>퇴실시간</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>출석횟수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>지각횟수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>조퇴횟수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>외출횟수</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>결석횟수</string>
+      </property>
+     </column>
     </widget>
     <widget class="QPushButton" name="okbutton2">
      <property name="geometry">
@@ -644,64 +612,6 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="page_7">
-    <widget class="QCalendarWidget" name="calendarWidget_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>421</width>
-       <height>271</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_tadd">
-     <property name="geometry">
-      <rect>
-       <x>351</x>
-       <y>351</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>일정 추가</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_home5">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>20</y>
-       <width>75</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>home</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="scheduleadd_2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>352</y>
-       <width>321</width>
-       <height>20</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QListWidget" name="schedulespace2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>390</y>
-       <width>411</width>
-       <height>131</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
    <widget class="QWidget" name="page_5">
     <widget class="QLineEdit" name="message">
      <property name="geometry">
@@ -726,7 +636,7 @@
       <string>전송</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_home6">
+    <widget class="QPushButton" name="btn_home5">
      <property name="geometry">
       <rect>
        <x>350</x>
@@ -749,22 +659,34 @@
       </rect>
      </property>
     </widget>
-   </widget>
-   <widget class="QWidget" name="page_8">
-    <widget class="QPushButton" name="check_message">
+    <widget class="QComboBox" name="teacherlist">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>472</y>
+       <x>30</x>
+       <y>20</y>
        <width>75</width>
-       <height>23</height>
+       <height>20</height>
       </rect>
      </property>
-     <property name="text">
-      <string>확인</string>
-     </property>
+     <item>
+      <property name="text">
+       <string>이상복</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>류홍걸</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>조동현</string>
+      </property>
+     </item>
     </widget>
-    <widget class="QPushButton" name="btn_home7">
+   </widget>
+   <widget class="QWidget" name="page_8">
+    <widget class="QPushButton" name="btn_home6">
      <property name="geometry">
       <rect>
        <x>350</x>
@@ -786,6 +708,151 @@
        <height>380</height>
       </rect>
      </property>
+    </widget>
+    <widget class="QComboBox" name="studentlist">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>20</y>
+       <width>75</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>강민영</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>고연재</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>김기태</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>김명은</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>김성일</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>김연수</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>노도현</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>류가미</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>박규환</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>박성빈</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>박시형</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>박의용</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>오송화</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이범규</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이보라</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이소윤</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이여름</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이지혜</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>이현도</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>임성경</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>임영효</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>임홍선</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>장은희</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>정연우</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>정철우</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>주민석</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>최지혁</string>
+      </property>
+     </item>
     </widget>
    </widget>
   </widget>
