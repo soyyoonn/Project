@@ -19,6 +19,7 @@ class Check_attendance(QMainWindow,form_class):
         self.setupUi(self)
         self.stackedWidget.setCurrentIndex(0)
         self.log_check = False
+        # self.manage_mode = False
         self.btn_home1.clicked.connect(self.move_main)   # 메인 페이지로 이동
         self.btn_home2.clicked.connect(self.move_main)
         self.btn_home3.clicked.connect(self.move_main)
@@ -110,6 +111,14 @@ class Check_attendance(QMainWindow,form_class):
         elif self.log_check == True:
             self.stackedWidget.setCurrentIndex(5)
 
+    # def manage(self):      # 관리자 모드 설정
+    #     # if self.log[0][4] != '교수':
+    #     #     self.manage_mode = False
+    #     #     QMessageBox.critical(self, '알림', '관리자가 아닙니다')
+    #     #     return
+    #     if self.log[0][4] == '교수':
+    #         self.manage_mode = True
+
     def login(self):
         id = self.id.text()
         pw = self.pw.text()
@@ -121,8 +130,10 @@ class Check_attendance(QMainWindow,form_class):
         cursor = conn.cursor()
         cursor.execute(
             f"SELECT * FROM check_data WHERE ID='{id}' AND 비밀번호='{pw}'")
+        print(id)
+        print(pw)
         self.log = cursor.fetchall()
-
+        print(self.log)
 
         if bool(self.log) == False:  # 아이디나 비밀번호가 맞지 않을 때
             print('1234')
@@ -144,10 +155,18 @@ class Check_attendance(QMainWindow,form_class):
         elif self.log[0][1] == id and self.log[0][4] == '교수':
             QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그인 되었습니다')
             self.log_check = True
+            # self.manage_mode = True
             self.log2_btn()
             self.move_main()
 
     def logout(self):
+        # conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+        #                        charset='utf8')
+        # cursor = conn.cursor()
+        # cursor.execute(
+        #     f"UPDATE check_data SET 로그인여부= CONCAT ('0')")
+        # conn.commit()
+        # conn.close()
         QMessageBox.information(self, '알림', f'{self.log[0][3]}님 로그아웃 되었습니다')
         self.log_check = False
         self.log_btn()
@@ -166,18 +185,24 @@ class Check_attendance(QMainWindow,form_class):
     def schedule(self):
         self.schedulespace.clear()
         self.date = self.calendarWidget.selectedDate()
+        print(self.date)
         self.date_add = self.date.toString("yyyyMMdd")
+        print(self.date_add)
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM schedule WHERE 날짜='{int(self.date_add)}'")
         s = cursor.fetchall()
+        print(s)
         for i in range(len(s)):
             add = s[i][0] + ' ' + s[i][1]
             self.schedulespace.addItem(add)
+            # self.schedulespace.addItem((b[i][0]))
+            # self.schedulespace.addItem((b[i][1]))
 
     def schedule_add(self):    # 일정 추가
         scheduleadd = self.scheduleadd.text()
+        print(scheduleadd)
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
@@ -192,7 +217,9 @@ class Check_attendance(QMainWindow,form_class):
     def send_message(self):  # 학생이 관리자에게 메시지 전송
         self.messagespace.clear()
         teacherlist = self.teacherlist.currentText()
+        print(teacherlist)
         message = self.message.text()
+        print(message)
         if message == '':
             QMessageBox.information(self, '알림', '메시지를 입력해주세요')
             return
@@ -206,6 +233,7 @@ class Check_attendance(QMainWindow,form_class):
         m = cursor.fetchall()
         conn.close()
         self.message.clear()
+        print(m)
         for i in range(len(m)):
             self.messagespace.addItem(m[i][0] + ' : '+ m[i][1])
 
@@ -229,6 +257,7 @@ class Check_attendance(QMainWindow,form_class):
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM message WHERE 받는사람='{self.log[0][3]}' and 알림=1")
         self.messagenotice = cursor.fetchall()
+        print(self.messagenotice)
         if self.messagenotice != ():
             self.messagelabel.setText(f'{self.messagenotice[0][0]}님에게 새로운 메시지가 도착했습니다.')
             self.messagelabel.show()
@@ -244,6 +273,7 @@ class Check_attendance(QMainWindow,form_class):
         cursor = conn.cursor()
         cursor.execute(f"SELECT * FROM check_data WHERE 번호 < 28")
         self.attendance_check = cursor.fetchall()
+        print(self.attendance_check)
         conn.close()
 
         Row = 0
@@ -289,6 +319,8 @@ class Check_attendance(QMainWindow,form_class):
     def checkintime(self):    # 입실 찍을 때
         checkin = self.checkin.text()
         now = datetime.now()
+        # self.checkintime = now.strftime('%H%M%S')
+        # print(self.checkintime)
         intime = now.strftime('%Y-%m-%d %H:%M:%S')
         # -------------------------------
         time = QTime.currentTime()
@@ -307,6 +339,9 @@ class Check_attendance(QMainWindow,form_class):
         conn.close()
         QMessageBox.information(self, '알림', f'{intime}\n {self.log[0][3]}님 입실')
         self.checkin.setText(intime)
+
+
+
 
     def checkouttime(self):   # 퇴실 찍을 때
         checkout = self.checkout.text()
@@ -362,7 +397,7 @@ class Check_attendance(QMainWindow,form_class):
         self.backtime = time
 
 
-    def backalarm(self):  # 복귀 알림
+    def backalarm(self):
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
                                charset='utf8')
         cursor = conn.cursor()
@@ -383,6 +418,23 @@ class Check_attendance(QMainWindow,form_class):
         self.th = thread_one(self)
         self.th.start()
 
+
+        # conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
+        #                        charset='utf8')
+        # cursor = conn.cursor()
+        # cursor.execute(f"SELECT * FROM check_data WHERE 입실체크=1")
+        # self.latenotice = cursor.fetchall()
+        # print(self.latenotice)
+        # if self.latenotice != ():
+        #     self.studentlabel.setText(f'지각자 {self.latenotice[0][3]}님이\n'
+        #                               f'입실했습니다.')
+        #     self.studentlabel.show()
+        #     cursor.execute(f"UPDATE check_data SET 입실체크=0 WHERE 이름='{self.latenotice[0][3]}'")
+        # if self.latenotice == ():
+        #     self.studentlabel.hide()
+        # conn.commit()
+        # conn.close()
+
     def attendance_plus(self):  # 출석 카운트 +1
         attendacecount = self.attendancecount.text()
         conn = pymysql.connect(host='localhost', port=3306, user='root', password='00000000', db='sy',
@@ -392,6 +444,9 @@ class Check_attendance(QMainWindow,form_class):
             f"UPDATE check_data SET 출석횟수='{int(self.log[0][9])+1}' WHERE 이름='{self.log[0][3]}'")
         cursor.execute(f"SELECT * FROM check_data WHERE 출석횟수='{int(self.log[0][9])+1}' and 이름='{self.log[0][3]}'")
         self.attendance_count = cursor.fetchall()
+        # print(self.log[0][9])
+        # print(self.attendance_count)
+        # print(self.attendance_count[0][9])
         conn.commit()
         conn.close()
         self.attendancecount.setText(str(self.attendance_count[0][9]))
@@ -452,7 +507,6 @@ class Check_attendance(QMainWindow,form_class):
         conn.commit()
         conn.close()
         self.absentcount.setText(str(self.absent_count[0][13]))
-
 
 class thread_one(threading.Thread):
     def __init__(self, check):

@@ -23,7 +23,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="page_2">
     <widget class="QPushButton" name="btn_login">
@@ -553,6 +553,19 @@
       <string>출결 확인</string>
      </property>
     </widget>
+    <widget class="QLabel" name="studentlabel">
+     <property name="geometry">
+      <rect>
+       <x>15</x>
+       <y>20</y>
+       <width>141</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="page_3">
     <widget class="QCalendarWidget" name="calendarWidget">
@@ -853,6 +866,19 @@
        <string>최지혁</string>
       </property>
      </item>
+    </widget>
+    <widget class="QLabel" name="messagelabel">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>460</y>
+       <width>361</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>알림</string>
+     </property>
     </widget>
    </widget>
   </widget>
